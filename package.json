@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-litescrape",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "n8n community node for the Litescrape API: Google Search, Google Maps, Google Reviews, Bing, DuckDuckGo, Yelp, Tripadvisor, and Apple Maps data in your workflows",
 	"license": "MIT",
 	"homepage": "https://litescrape.com",
