@@ -1,0 +1,59 @@
+{
+	"name": "n8n-nodes-litescrape",
+	"version": "0.1.0",
+	"description": "n8n community node for the Litescrape API: Google Search, Google Maps, Google Reviews, Bing, DuckDuckGo, Yelp, Tripadvisor, and Apple Maps data in your workflows",
+	"license": "MIT",
+	"homepage": "https://litescrape.com",
+	"keywords": [
+		"n8n-community-node-package",
+		"litescrape",
+		"serp",
+		"google search",
+		"google maps",
+		"google reviews",
+		"web scraping"
+	],
+	"author": {
+		"name": "Litescraper",
+		"email": "support@litescrape.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/litescrape/litescrape-n8n.git"
+	},
+	"scripts": {
+		"build": "n8n-node build",
+		"build:watch": "tsc --watch",
+		"dev": "n8n-node dev",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"release": "n8n-node release",
+		"prepublishOnly": "n8n-node prerelease"
+	},
+	"files": [
+		"dist"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"strict": true,
+		"credentials": [
+			"dist/credentials/LitescrapeApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/Litescrape/Litescrape.node.js"
+		]
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "^0.46.4",
+		"eslint": "9.39.4",
+		"prettier": "3.8.3",
+		"release-it": "20.2.0",
+		"typescript": "5.9.3"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}

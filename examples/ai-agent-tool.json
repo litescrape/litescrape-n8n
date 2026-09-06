@@ -1,0 +1,74 @@
+{
+	"name": "Litescrape: AI Agent with search and reviews tools",
+	"nodes": [
+		{
+			"parameters": {
+				"options": {}
+			},
+			"name": "When chat message received",
+			"type": "@n8n/n8n-nodes-langchain.chatTrigger",
+			"typeVersion": 1.1,
+			"position": [0, 0]
+		},
+		{
+			"parameters": {
+				"options": {
+					"systemMessage": "You research businesses and products. Use the Google Search tool for web results and the Google Reviews tool when the user asks about a specific place. Cite the sources you used."
+				}
+			},
+			"name": "AI Agent",
+			"type": "@n8n/n8n-nodes-langchain.agent",
+			"typeVersion": 1.7,
+			"position": [260, 0]
+		},
+		{
+			"parameters": {
+				"options": {}
+			},
+			"name": "Chat Model",
+			"type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+			"typeVersion": 1.2,
+			"position": [160, 220]
+		},
+		{
+			"parameters": {
+				"resource": "googleSearch",
+				"operation": "googleSearch",
+				"q": "={{ $fromAI('query', 'The web search query', 'string') }}",
+				"output": "selected",
+				"fields": ["organic_results", "related_questions"]
+			},
+			"name": "Google Search",
+			"type": "n8n-nodes-litescrape.litescrapeTool",
+			"typeVersion": 1,
+			"position": [340, 220]
+		},
+		{
+			"parameters": {
+				"resource": "googleReview",
+				"operation": "googleReviews",
+				"placeId": "={{ $fromAI('placeId', 'The Google place ID of the business', 'string') }}",
+				"output": "selected",
+				"fields": ["place_info", "reviews"]
+			},
+			"name": "Google Reviews",
+			"type": "n8n-nodes-litescrape.litescrapeTool",
+			"typeVersion": 1,
+			"position": [520, 220]
+		}
+	],
+	"connections": {
+		"When chat message received": {
+			"main": [[{ "node": "AI Agent", "type": "main", "index": 0 }]]
+		},
+		"Chat Model": {
+			"ai_languageModel": [[{ "node": "AI Agent", "type": "ai_languageModel", "index": 0 }]]
+		},
+		"Google Search": {
+			"ai_tool": [[{ "node": "AI Agent", "type": "ai_tool", "index": 0 }]]
+		},
+		"Google Reviews": {
+			"ai_tool": [[{ "node": "AI Agent", "type": "ai_tool", "index": 0 }]]
+		}
+	}
+}

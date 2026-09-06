@@ -1,0 +1,46 @@
+{
+	"name": "Litescrape: Google Search to items",
+	"nodes": [
+		{
+			"parameters": {},
+			"name": "When clicking 'Execute workflow'",
+			"type": "n8n-nodes-base.manualTrigger",
+			"typeVersion": 1,
+			"position": [0, 0]
+		},
+		{
+			"parameters": {
+				"resource": "googleSearch",
+				"operation": "googleSearch",
+				"q": "best espresso machines",
+				"options": {
+					"country": "us",
+					"language": "en",
+					"resultCount": 10
+				}
+			},
+			"name": "Google Search",
+			"type": "n8n-nodes-litescrape.litescrape",
+			"typeVersion": 1,
+			"position": [240, 0]
+		},
+		{
+			"parameters": {
+				"fieldToSplitOut": "organic_results",
+				"options": {}
+			},
+			"name": "One item per result",
+			"type": "n8n-nodes-base.splitOut",
+			"typeVersion": 1,
+			"position": [480, 0]
+		}
+	],
+	"connections": {
+		"When clicking 'Execute workflow'": {
+			"main": [[{ "node": "Google Search", "type": "main", "index": 0 }]]
+		},
+		"Google Search": {
+			"main": [[{ "node": "One item per result", "type": "main", "index": 0 }]]
+		}
+	}
+}

@@ -1,0 +1,67 @@
+{
+	"name": "Litescrape: Google Reviews with continuation",
+	"nodes": [
+		{
+			"parameters": {},
+			"name": "When clicking 'Execute workflow'",
+			"type": "n8n-nodes-base.manualTrigger",
+			"typeVersion": 1,
+			"position": [0, 0]
+		},
+		{
+			"parameters": {
+				"resource": "googleMapsPlace",
+				"operation": "googleMapsSearch",
+				"q": "coffee shops in Austin, TX",
+				"options": {
+					"viewport": "@30.2672,-97.7431,14z"
+				}
+			},
+			"name": "Find the place",
+			"type": "n8n-nodes-litescrape.litescrape",
+			"typeVersion": 1,
+			"position": [240, 0]
+		},
+		{
+			"parameters": {
+				"resource": "googleReview",
+				"operation": "googleReviews",
+				"placeId": "={{ $json.local_results[0].place_id }}",
+				"options": {
+					"reviewCount": 20,
+					"sortBy": "newestFirst"
+				}
+			},
+			"name": "First page of reviews",
+			"type": "n8n-nodes-litescrape.litescrape",
+			"typeVersion": 1,
+			"position": [480, 0]
+		},
+		{
+			"parameters": {
+				"resource": "googleReview",
+				"operation": "googleReviews",
+				"placeId": "={{ $('Find the place').item.json.local_results[0].place_id }}",
+				"options": {
+					"nextPage": "={{ $json.pagination.next_page_token }}",
+					"reviewCount": 20
+				}
+			},
+			"name": "Next page of reviews",
+			"type": "n8n-nodes-litescrape.litescrape",
+			"typeVersion": 1,
+			"position": [720, 0]
+		}
+	],
+	"connections": {
+		"When clicking 'Execute workflow'": {
+			"main": [[{ "node": "Find the place", "type": "main", "index": 0 }]]
+		},
+		"Find the place": {
+			"main": [[{ "node": "First page of reviews", "type": "main", "index": 0 }]]
+		},
+		"First page of reviews": {
+			"main": [[{ "node": "Next page of reviews", "type": "main", "index": 0 }]]
+		}
+	}
+}
