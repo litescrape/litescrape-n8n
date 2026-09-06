@@ -7,6 +7,14 @@ import type { Query } from './types';
 
 const REQUEST_TIMEOUT_MS = 120000;
 
+// The routing layer calls preSend and postReceive with the same per-item context, so the
+// prepared request is kept here for the response step to replay when the API asks for a retry.
+const preparedRequests = new WeakMap<object, IHttpRequestOptions>();
+
+export function preparedRequestFor(context: object): IHttpRequestOptions | undefined {
+	return preparedRequests.get(context);
+}
+
 function serialize(value: unknown, isFlag: boolean): string | undefined {
 	if (value === undefined || value === null) return undefined;
 	if (typeof value === 'boolean') {
@@ -50,5 +58,6 @@ export async function prepareRequest(
 	requestOptions.qs = qs;
 	requestOptions.timeout = REQUEST_TIMEOUT_MS;
 	requestOptions.ignoreHttpStatusErrors = true;
+	preparedRequests.set(this, { ...requestOptions, qs: { ...qs } });
 	return requestOptions;
 }

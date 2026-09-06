@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.0
+
+- Automatic retries for temporary API errors. When the API answers with a retryable error, such as `service_unavailable` or a rate limit, the node waits with exponential backoff, honors `Retry-After`, and re-issues the same request up to **Max Retries** times (default 2) before raising the error. Only successful responses consume a call, so retries never double-bill.
+
 ## 0.1.1
 
 - First release published from GitHub Actions with npm provenance. No functional changes.

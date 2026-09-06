@@ -83,6 +83,31 @@ export class Litescrape implements INodeType {
 					},
 				},
 			},
+			{
+				displayName: 'Auto Retry',
+				name: 'autoRetry',
+				type: 'boolean',
+				default: true,
+				description:
+					'Whether to retry the request automatically when the API reports a temporary error, waiting with backoff and honoring Retry-After. Only successful responses consume a call.',
+			},
+			{
+				displayName: 'Max Retries',
+				name: 'maxRetries',
+				type: 'number',
+				typeOptions: {
+					minValue: 0,
+					maxValue: 5,
+				},
+				default: 2,
+				description:
+					'Number of additional attempts after the first request before the error is raised',
+				displayOptions: {
+					show: {
+						autoRetry: [true],
+					},
+				},
+			},
 		],
 	};
 }

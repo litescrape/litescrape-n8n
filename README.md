@@ -88,7 +88,9 @@ When used as a tool, an **Output** parameter replaces **Simplify**:
 
 The node checks required fields and mutually exclusive parameters before it sends a request, so an invalid combination fails in n8n without spending a call.
 
-API errors surface as node errors carrying the API's `error_code` and `request_id`. Enable **Retry On Fail** on the node for errors the API marks as retryable, such as a temporary `service_unavailable`. Only successful responses consume a call; rejected and failed requests are not billed.
+Temporary API errors are retried automatically. When the API answers with a retryable error, such as `service_unavailable` or a rate limit, the node waits with exponential backoff (1, 2, 4 seconds and so on, or the API's `Retry-After`, capped at 30 seconds) and re-issues the same request up to **Max Retries** times, 2 by default. Turn **Auto Retry** off to raise the error immediately. Only successful responses consume a call, so retries never double-bill.
+
+Errors that survive the retries, and errors the API marks as permanent, surface as node errors carrying the API's `error_code` and `request_id`. Network failures happen before the node sees a response, so enable n8n's **Retry On Fail** on the node if you also want those retried.
 
 Requests time out after 120 seconds, above the API's own 90 second deadline. AI Mode is the slowest operation.
 
